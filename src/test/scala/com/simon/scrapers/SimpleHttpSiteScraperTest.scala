@@ -2,7 +2,6 @@ package com.simon.scrapers
 
 import org.jsoup.nodes.Document
 import org.jsoup.Jsoup
-import org.junit.Test
 import org.mockito.Mockito
 
 import java.net.URL
@@ -15,7 +14,6 @@ class SimpleHttpSiteScraperTest {
   val exampleUrl: String = "http://www.example.com/"
 
   // @formatter:off
-  @Test
   def testFindNewLinks_BadUrlReturnsEmptyList() {
     def html: String = "<head>" +
                        "    <title>My Test Page</title>" +
@@ -33,7 +31,6 @@ class SimpleHttpSiteScraperTest {
     assert(received == Nil)
   }
 
-  @Test
   def testFindNewLinks_NoAnchorsReturnsNoLinks() {
     def html: String = "<head>" +
                        "    <title>My Test Page</title>" +
@@ -51,7 +48,6 @@ class SimpleHttpSiteScraperTest {
     assert(received == Nil)
   }
 
-  @Test
   def testFindNewLinks_AnchorWithoutHrefReturnsNoLinks() {
     def html: String = "<head>" +
                        "    <title>My Test Page</title>" +
@@ -71,7 +67,6 @@ class SimpleHttpSiteScraperTest {
   }
 
   // FIXME We don't want to ignore relative links.
-  @Test
   def testFindNewLinks_RelativeLinkIgnored() {
     def html: String = "<head>" +
                        "    <title>My Test Page</title>" +
@@ -91,7 +86,6 @@ class SimpleHttpSiteScraperTest {
     // TODO assert(received == "http://www.example.com/relative/link/ :: Nil)
   }
 
-  @Test
   def testFindNewLinks_AbsoluteLinkToDifferentSiteIgnored() {
     def html: String = "<head>" +
                        "    <title>My Test Page</title>" +
@@ -110,7 +104,26 @@ class SimpleHttpSiteScraperTest {
     assert(received == Nil)
   }
 
-  @Test
+  // FIXME when the host is embedded within a link to another site, we should ignore it
+  def testFindNewLinks_HostEmbeddedInAbsoluteLinkToDifferentSiteNotIgnored() {
+    def html: String = "<head>" +
+                       "    <title>My Test Page</title>" +
+                       "</head>" +
+                       "<body>" +
+                       "    <h1>Heading</h1>" +
+                       "    <p>stuff</p>" +
+                       "    <a href=\"http://www.unknown.com/www.example.com/tags/my-tag\">text</a>" +
+                       "</body>"
+
+    def scraper = newSimpleHttpSiteScraper(exampleUrl, Map(exampleUrl -> html))
+    def doc: Document = Jsoup.parse(html)
+
+    def received = scraper.findNewLinks(Set(), Nil, exampleUrl, doc)
+
+    assert(received == "http://www.unknown.com/www.example.com/tags/my-tag/" :: Nil)
+//    assert(received == Nil)
+  }
+
   def testFindNewLinks_SingleAbsoluteLinkToThisSiteReturned() {
     def html: String = "<head>" +
                        "    <title>My Test Page</title>" +
@@ -129,7 +142,6 @@ class SimpleHttpSiteScraperTest {
     assert(received == "http://www.example.com/tags/my-tag/" :: Nil)
   }
 
-  @Test
   def testFindNewLinks_SingleAbsoluteLinkWithoutTrailingSlashReturned() {
     def html: String = "<head>" +
                        "    <title>My Test Page</title>" +
@@ -148,7 +160,6 @@ class SimpleHttpSiteScraperTest {
     assert(received == "http://www.example.com/tags/my-tag/" :: Nil)
   }
 
-  @Test
   def testFindNewLinks_LinkAppearsTwiceIsReturnedOnce() {
     def html: String = "<head>" +
                        "    <title>My Test Page</title>" +
@@ -168,7 +179,6 @@ class SimpleHttpSiteScraperTest {
     assert(received == "http://www.example.com/tags/my-tag/" :: Nil)
   }
 
-  @Test
   def testFindNewLinks_TwoDifferentLinksBothReturned() {
     def html: String = "<head>" +
                        "    <title>My Test Page</title>" +
@@ -190,7 +200,6 @@ class SimpleHttpSiteScraperTest {
     assert(received.contains("http://www.example.com/tags/my-tag2/"))
   }
 
-  @Test
   def testFindNewLinks_LinkWithWhitespaceIsNotReturned() {
     def html: String = "<head>" +
                        "    <title>My Test Page</title>" +
@@ -209,7 +218,6 @@ class SimpleHttpSiteScraperTest {
     assert(received ==  Nil)
   }
 
-  @Test
   def testFindNewLinks_LinkToThisPageIsNotReturned() {
     def html: String = "<head>" +
                        "    <title>My Test Page</title>" +
@@ -228,7 +236,6 @@ class SimpleHttpSiteScraperTest {
     assert(received == Nil)
   }
 
-  @Test
   def testFindNewLinks_AlreadyVisitedLinkIsNotReturned() {
     def html: String = "<head>" +
                        "    <title>My Test Page</title>" +
@@ -247,7 +254,6 @@ class SimpleHttpSiteScraperTest {
     assert(received == Nil)
   }
 
-  @Test
   def testFindNewLinks_KnownLinkToBeVisitedIsNotReturned() {
     def html: String = "<head>" +
                        "    <title>My Test Page</title>" +
@@ -266,7 +272,6 @@ class SimpleHttpSiteScraperTest {
     assert(received == Nil)
   }
 
-  @Test
   def testFindNewLinks_LinkToHttpsIsReturned() {
     def html: String = "<head>" +
                        "    <title>My Test Page</title>" +
@@ -285,7 +290,6 @@ class SimpleHttpSiteScraperTest {
     assert(received == "https://www.example.com/tags/my-tag/" :: Nil)
   }
 
-  @Test
   def testFindNewLinks_LinkToNonHttpOrHttpsProtocolIsNotReturned() {
     def html: String = "<head>" +
                        "    <title>My Test Page</title>" +
@@ -304,7 +308,6 @@ class SimpleHttpSiteScraperTest {
     assert(received == Nil)
   }
 
-  @Test
   def testScrape_PageWithNoLinksReturnsMapWithOnePair() {
     def html: String = "<head>" +
                        "    <title>My Test Page</title>" +
@@ -322,7 +325,6 @@ class SimpleHttpSiteScraperTest {
     assert(received.contains((exampleUrl, pageText)))
   }
 
-  @Test
   def testScrape_PageWithLinkToItselfReturnsMapWithOnePair() {
     def html: String = "<head>" +
                        "    <title>My Test Page</title>" +
@@ -341,7 +343,6 @@ class SimpleHttpSiteScraperTest {
     assert(received.contains((exampleUrl, pageText)))
   }
 
-  @Test
   def testScrape_TwoPagesLinkingToEachOtherBothReturned() {
     def url1 = exampleUrl;
     def html1: String = "<head>" +
@@ -373,7 +374,6 @@ class SimpleHttpSiteScraperTest {
     assert(received.contains((url2, page2Text)))
   }
 
-  @Test
   def testScrape_ThreePageSiteExternalLinksNotReturned() {
     def url1 = exampleUrl;
     def html1: String = "<head>" +

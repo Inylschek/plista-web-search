@@ -11,7 +11,7 @@ class ScalatraBootstrap extends LifeCycle {
     
     // TODO escape query string
     // TODO case insensitve searching
-    val queryableDatabase = new SimpleKeyValueDatabase[String, String]((k, v, s) => if (s.length < 3) false else v.contains(s))
+    val queryableDatabase = new SimpleKeyValueDatabase[String, String]((k, v, s) => v.toLowerCase.contains(s.toLowerCase))
     
     val emptyDatabaseFactory: () => AbstractKeyValueDatabase[String, String] =
       () => new SimpleKeyValueDatabase[String, String]((k, v, s) => true)

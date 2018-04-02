@@ -47,7 +47,7 @@ class SimpleHttpSiteScraper(startUrl: String,
   // TODO ensure links visit are from host site, and do not simply contain host site nested within the url
   // TODO move method to it's own class
   // TODO merge visited and toVisit parameters as single blacklist parameter
-  // TODO this method only checks the href attribute of <a> tags. Are other links possible?
+  // TODO if the host is embedded within some link to another site, then that link is scraped too. These should be filtered 
   def findNewLinks(visited: Set[String], toVisit: List[String], urlString: String, doc: Document) : List[String] = {
     try {
       // return NIL if not a valid URL
