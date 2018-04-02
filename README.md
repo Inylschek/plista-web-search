@@ -23,6 +23,7 @@ You may search during scraping, but results from the current scrape will only
 be avilable once that scrape is complete
 
 NOTABLE FEATURE ABSENCES:
+
 Relative links are not scraped.
 
 Apart from case-insensitivity no processing is performed on scraped text or query text. Only exact matches return results.
