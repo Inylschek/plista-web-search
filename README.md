@@ -1,7 +1,4 @@
-# plista-web-search
-
-To run the tests
-mvn test
+# web-search
 
 To build
 mvn clean install
@@ -11,6 +8,13 @@ mvn jetty:run
 
 Then navigate to
 http://localhost:8080/
+
+Unfortunately an error occurs when running jetty, if the org.scalatest dependency is in the pom.xml
+This dependency has been commented out, however to run the tests,
+
+mvn test
+
+, you first need to uncomment this dependency. Sorry :(
 
 To scrape a site, enter it in the scrape field and press enter
 To search a site, enter the full text term in the search field and press enter
