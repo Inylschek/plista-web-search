@@ -1,0 +1,25 @@
+-@ val error : String
+-@ val results : Map[String, String]
+
+h1 Web Scrape/Search
+
+form(name="newScrape" action="/scrape" method="post")
+    Add Scrape:
+    input(type="text" name="url")
+    button(type="submit" name="scrape")
+        New Scrape
+
+- if (error != "")
+    p error
+
+form(name="newSearch" action="/search" method="post")
+    Add Search:
+    input(type="text" name="searchTerm")
+    button(type="submit" name="search")
+        New Search
+
+h2 Results
+ul
+- for ((k, v) <- results)
+    <a href=#{k}>#{k}</a>
+    <p>#{v}</p>
