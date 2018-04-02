@@ -16,7 +16,7 @@ class ScalatraBootstrap extends LifeCycle {
     val emptyDatabaseFactory: () => AbstractKeyValueDatabase[String, String] =
       () => new SimpleKeyValueDatabase[String, String]((k, v, s) => true)
     val scraperFactory: String => SimpleHttpSiteScraper =
-      (url: String) => new SimpleHttpSiteScraper(url, emptyDatabaseFactory)
+      (url: String) => new SimpleHttpSiteScraper(url, emptyDatabaseFactory())
 
     context mount (new MyServlet(queryableDatabase, scraperFactory), "/*")
   }
